@@ -1,53 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Board from './components/Board';
 
-const mockTasks = [
-  {
-    id: 1,
-    title: 'Create a GitHub repository & initialize React project',
-    description: 'Set up a new repository and initialize a React project with Vite.',
-    status: 'Done',
-    tag: 'Frontend',
-    priority: 'High',
-    dueDate: 'Aug 2',
-    assignee: 'Sandev'
-  },
-  {
-    id: 2,
-    title: 'Create Backend for Board, Column, and TaskCard components',
-    description: 'Implement RESTful APIs for managing boards, columns, and tasks using Express.js.',
-    status: 'Doing',
-    tag: 'Backend',
-    priority: 'High',
-    dueDate: 'Aug 16',
-    assignee: 'Team'
-  },
-  {
-    id: 3,
-    title: 'Design MongoDB schemas & caching',
-    description: 'Structure Mongoose models and implement client-side local caching.',
-    status: 'To Do',
-    tag: 'Database',
-    priority: 'Medium',
-    dueDate: 'Aug 23',
-    assignee: 'Sandev'
-  },
-  {
-    id: 4,
-    title: 'Configure GitHub Actions CI test suite',
-    description: 'Automate Jest and Supertest test runs across PRs.',
-    status: 'To Do',
-    tag: 'DevOps',
-    priority: 'Low',
-    dueDate: 'Aug 30',
-    assignee: 'Team'
-  }
-];
-
 function App() {
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/tasks');
+        const data = await response.json();
+        
+        setTasks(data);
+      } catch (error) {
+        console.error("Failed to fetch tasks:", error);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
   return (
     <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: '#f8fafc' }}>
-      {}
       <aside style={{ width: '240px', minWidth: '240px', backgroundColor: '#ffffff', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '24px 16px' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', paddingBottom: '24px', borderBottom: '1px solid #f1f5f9' }}>
@@ -68,9 +41,7 @@ function App() {
         </div>
       </aside>
 
-      {}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-        {}
         <header style={{ height: '64px', backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <input 
@@ -85,9 +56,8 @@ function App() {
           </button>
         </header>
 
-        {}
         <main style={{ flex: 1, padding: '32px', overflowX: 'auto', backgroundColor: '#f8fafc' }}>
-          <Board tasks={mockTasks} />
+          <Board tasks={tasks} />
         </main>
       </div>
     </div>
