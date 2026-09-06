@@ -1,22 +1,29 @@
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = "collab_board_super_secret_key";
+
+const SECRET_KEY = process.env.JWT_SECRET || 'collab_board_super_secret_key';
 
 const protect = (req, res, next) => {
-    const token = req.header('Authorization');
+  const authHeader = req.header('Authorization');
 
-    if (!token) {
-        return res.status(401).json({ message: "Access denied. Please log in." });
-    }
+  if (!authHeader) {
+    return res.status(401).json({ message: 'Access denied. Please log in.' });
+  }
 
-    try {
-        const verified = jwt.verify(token.replace("Bearer ", ""), SECRET_KEY);
-        
-        req.user = verified; 
-        
-        next(); 
-    } catch (error) {
-        res.status(400).json({ message: "Invalid token" });
-    }
+  try {
+    const token = authHeader.startsWith('Bearer ')
+      ? authHeader.slice(7).trim()
+      : authHeader;
+
+    const verified = jwt.verify(token, SECRET_KEY);
+    req.user = {
+      id: verified.id || verified._id,
+      username: verified.username,
+    };
+
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Invalid or expired token' });
+  }
 };
 
 module.exports = protect;
