@@ -1,5 +1,13 @@
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
+const { webcrypto } = require('node:crypto');
+
+if (typeof globalThis.crypto === 'undefined') {
+  Object.defineProperty(globalThis, 'crypto', {
+    value: webcrypto,
+    configurable: true,
+  });
+}
 
 let mongoServer;
 
