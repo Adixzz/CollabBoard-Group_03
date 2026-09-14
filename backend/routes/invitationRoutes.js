@@ -15,6 +15,7 @@ router.post('/', sendInvitation);
 router.get('/pending', getPendingInvitations);
 router.get('/sent', getSentInvitations);
 router.put('/:id/respond', respondToInvitation);
+router.post('/:id/respond', respondToInvitation);
 router.delete('/:id', cancelInvitation);
 
 module.exports = router;
